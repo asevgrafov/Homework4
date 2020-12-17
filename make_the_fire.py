@@ -1,4 +1,5 @@
 import random
+#Ghjcnj rjvvtynfhbq
 
 sol = ['apple', 'enemy', 'mech']
 knight = {'health': 10, 'strenght': 10}
