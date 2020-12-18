@@ -3,25 +3,25 @@ from Character import *
 from Level import *
 import random
 
-class Game():
 
+class Game():
     spawner_to_factory_mapping = {"Warrior": WarriorFactory(), "Archer": ArcherFactory(), "Wizard": WizardFactory()}
     hero_type_list = ["Warrior", "Archer", "Wizard"]
-    level_types = ["Apple", "PickUp"]
-    level_factory_mapping = {"Apple": AppleLevelFactory(), "PickUp": PickUpLevelFactory()}
+    level_types = ["Apple", "PickUp", "Enemy"]
+    level_factory_mapping = {"Apple": AppleLevelFactory(), "PickUp": PickUpLevelFactory(), "Enemy": EnemyLevelFactory()}
+
     def __init__(self):
         self.level_number = 1
         print("Выберите класс игрока")
         menu_items = []
         for i in range(len(self.hero_type_list)):
-            print(str(i+1) + ". " + str(self.hero_type_list[i]))
-            menu_items.append(i+1)
+            print(str(i + 1) + ". " + str(self.hero_type_list[i]))
+            menu_items.append(i + 1)
         a = get_int_input(menu_items)
-        self.hero = self.spawner_to_factory_mapping[self.hero_type_list[a-1]].create_character(Sword(10))
-
+        self.hero = self.spawner_to_factory_mapping[self.hero_type_list[a - 1]].create_character(Sword(10))
+        self.hero.current_health = 1000
+        self.hero.max_health = 1000
         print("Вы выбрали персонажа:\n" + str(self.hero))
-
-
 
     def play(self):
         while True:
