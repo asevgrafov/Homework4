@@ -59,11 +59,17 @@ class EnemyLevel(Level):
         enemy_type = random.choice(self.enemy_types)
         enemy = self.spawner_to_factory_mapping[enemy_type].create_character()
         print("Вы встретили врага: \n" + str(enemy))
+        if not self.hero_choise():
+            return True
         hero_step = True
         while hero.current_health > 0 and enemy.current_health > 0:
             self.step(hero, enemy, hero_step)
             hero_step = not hero_step
-        return hero.current_health > 0
+        if hero.current_health > 0:
+            hero.enemy_win_count += 1
+            return True
+        else:
+            return False
 
     def step(self, hero, enemy, hero_step):
         if hero_step:
@@ -95,6 +101,13 @@ class EnemyLevel(Level):
         else:
             return 1
 
+    def hero_choise(self):
+        print("1 - Сразиться, 2 - Убежать")
+        a = get_int_input([1, 2])
+        if a == 1:
+            return True
+        else:
+            return False
 
 class LevelFactory(ABC):
 
