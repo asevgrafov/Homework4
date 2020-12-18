@@ -9,6 +9,7 @@ class Character(ABC):
         self.max_health = 100
         self.items = {"Sword": None, "Magic_book": None, "Bow": None, "Arrows": None}
         self.totem = None
+        self.enemy_win_count = 0
 
     def attack(self, type_weapon=None):
         arrow_damage = 0
@@ -37,7 +38,8 @@ class Character(ABC):
 
     def __str__(self):
         return "Здоровье персонажа " + str(self.current_health) + " из " \
-               + str(self.max_health) + "\n" + self.get_inventory_string()
+               + str(self.max_health) + "\n" + "Побеждено врагов: " \
+               + str(self.enemy_win_count) + "\n" + self.get_inventory_string()
 
     def get_available_weapons(self):
         weapons = []
