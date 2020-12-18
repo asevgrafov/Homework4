@@ -35,3 +35,6 @@ class Game():
                 print(self.hero)
             input("Press Enter to continue...")
             self.level_number += 1
+
+
+Game().play()
