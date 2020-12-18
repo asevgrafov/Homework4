@@ -1,50 +1,65 @@
 from abc import ABC, abstractmethod
 
 class Items(ABC):
-    name = ""
+    def __init__(self):
+        self.name = ""
+
     def get_name(self):
         return self.name
 
+    def __str__(self):
+        return self.name
 
 class Equipment(Items):
-    damage = 0
+    def __init__(self):
+        super(Equipment, self).__init__()
+        self.damage = 0
 
     def get_damage(self):
         return self.damage
 
+    def __str__(self):
+        return self.name + " урон: " + str(self.damage)
 
 class Sword(Equipment):
-    name = "Меч"
 
     def __init__(self, d):
+        super(Sword, self).__init__()
         self.damage = d
-
+        self.name = "Меч"
 
 class Bow(Equipment):
-    name = "Лук"
+
 
     def __init__(self, d):
+        super(Bow, self).__init__()
         self.damage = d
-
+        self.name = "Лук"
 
 class Arrows(Equipment):
-    name = "Стрелы"
+
 
     def __init__(self, d):
+        super(Arrows, self).__init__()
         self.damage = d
-
+        self.name = "Стрелы"
 
 class MagicBook(Equipment):
-    name = "Магическая книга"
+
 
     def __init__(self, d):
+        super(MagicBook, self).__init__()
         self.damage = d
-
+        self.name = "Магическая книга"
 
 class Apple(Items):
-    name = "Яблоко"
-    heal = 0
+    def __init__(self):
+        super(Apple, self).__init__()
+        self.name = "Яблоко"
+        self.heal = 0
 
 class Totem(Items):
-    name = "Тотем"
-    state = 0
+    def __init__(self):
+        super(Totem, self).__init__()
+        self.name = "Тотем"
+        self.state = 0
