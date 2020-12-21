@@ -5,10 +5,15 @@ import random
 
 
 class Game():
-    spawner_to_factory_mapping = {"Warrior": WarriorFactory(), "Archer": ArcherFactory(), "Wizard": WizardFactory()}
+    spawner_to_factory_mapping = {"Warrior": WarriorFactory(),
+                                  "Archer": ArcherFactory(),
+                                  "Wizard": WizardFactory()}
     hero_type_list = ["Warrior", "Archer", "Wizard"]
-    level_types = ["Apple", "PickUp", "Enemy"]
-    level_factory_mapping = {"Apple": AppleLevelFactory(), "PickUp": PickUpLevelFactory(), "Enemy": EnemyLevelFactory()}
+    level_types = ["Apple", "PickUp", "Enemy", "Totem"]
+    level_factory_mapping = {"Apple": AppleLevelFactory(),
+                             "PickUp": PickUpLevelFactory(),
+                             "Enemy": EnemyLevelFactory(),
+                             "Totem": TotemLevelFactory()}
 
     def __init__(self):
         self.level_number = 1
@@ -19,7 +24,7 @@ class Game():
             menu_items.append(i + 1)
         a = get_int_input(menu_items)
         self.hero = self.spawner_to_factory_mapping[self.hero_type_list[a - 1]].create_character(Sword(10))
-        self.hero.current_health = 1000
+        self.hero.current_health = 100
         self.hero.max_health = 1000
         print("Вы выбрали персонажа:\n" + str(self.hero))
 
@@ -28,11 +33,16 @@ class Game():
             print()
             print("Уровень " + str(self.level_number))
             level = self.level_factory_mapping[random.choice(self.level_types)].create_level()
+
             if not level.play(self.hero, self.level_number):
                 print("Game over!")
                 break
             else:
-                print(self.hero)
+                if self.hero.enemy_win_count == 4:
+                    print("УРА! Вы победили!")
+                    break
+                else:
+                    print(self.hero)
             input("Press Enter to continue...")
             self.level_number += 1
 

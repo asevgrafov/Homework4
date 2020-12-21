@@ -69,7 +69,12 @@ class EnemyLevel(Level):
             hero.enemy_win_count += 1
             return True
         else:
-            return False
+            if hero.totem is not None:
+                hero.restore_from_totem()
+                print("\nПоказатели героя были восстановлены\n")
+                return True
+            else:
+                return False
 
     def step(self, hero, enemy, hero_step):
         if hero_step:
@@ -109,6 +114,16 @@ class EnemyLevel(Level):
         else:
             return False
 
+class TotemLevel(Level):
+    def play(self, hero, n) -> bool:
+        print("Вы нашли тотем: ")
+        print("1 - Подобрать, 2 - Пройти мимо")
+        a = get_int_input([1, 2])
+        if a == 1:
+            hero.save_to_totem()
+        return True
+
+
 class LevelFactory(ABC):
 
     @abstractmethod
@@ -129,3 +144,7 @@ class PickUpLevelFactory(LevelFactory):
 class EnemyLevelFactory(LevelFactory):
     def create_level(self):
         return EnemyLevel()
+
+class TotemLevelFactory(LevelFactory):
+    def create_level(self):
+        return TotemLevel()
