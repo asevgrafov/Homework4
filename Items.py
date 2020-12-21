@@ -62,4 +62,6 @@ class Totem(Items):
     def __init__(self):
         super(Totem, self).__init__()
         self.name = "Тотем"
-        self.state = 0
+        self.current_health = None
+        self.items = None
+        self.enemy_win_count = None

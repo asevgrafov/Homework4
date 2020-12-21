@@ -2,6 +2,7 @@ from abc import ABC, abstractmethod
 from Items import *
 
 
+
 class Character(ABC):
 
     def __init__(self):
@@ -50,6 +51,19 @@ class Character(ABC):
         if self.items["Bow"] is not None and self.items["Arrows"] is not None:
             weapons.append(self.items["Bow"])
         return weapons
+
+    def save_to_totem(self):
+        self.totem = Totem()
+        self.totem.current_health = self.current_health
+        self.totem.items = self.items.copy()
+        self.totem.enemy_win_count = self.enemy_win_count
+
+    def restore_from_totem(self):
+        self.current_health = self.totem.current_health
+        self.items = self.totem.items
+        self.enemy_win_count = self.totem.enemy_win_count
+        self.totem = None
+
 
 
 class Wizard(Character):
