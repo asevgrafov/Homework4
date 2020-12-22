@@ -8,14 +8,17 @@ class Game():
     spawner_to_factory_mapping = {"Warrior": WarriorFactory(),
                                   "Archer": ArcherFactory(),
                                   "Wizard": WizardFactory()}
-    hero_type_list = ["Warrior", "Archer", "Wizard"]
-    level_types = ["Apple", "PickUp", "Enemy", "Totem"]
     level_factory_mapping = {"Apple": AppleLevelFactory(),
                              "PickUp": PickUpLevelFactory(),
                              "Enemy": EnemyLevelFactory(),
                              "Totem": TotemLevelFactory()}
+    hero_type_list = ["Warrior", "Archer", "Wizard"]
+    level_types = ["Apple", "PickUp", "Enemy", "Totem"]
 
-    def __init__(self):
+    def __init__(self) -> None:
+        """
+        Инициализируется начальное состояние игры с выбором персонажа
+        """
         self.level_number = 1
         print("Выберите класс игрока")
         menu_items = []
@@ -28,12 +31,15 @@ class Game():
         self.hero.max_health = 1000
         print("Вы выбрали персонажа:\n" + str(self.hero))
 
-    def play(self):
+    def play(self) -> None:
+        """
+        Воспроизводит основную стадию игры, последовательно запускает
+        каждый уровень и проверяет состояние между уровнями
+        """
         while True:
             print()
             print("Уровень " + str(self.level_number))
             level = self.level_factory_mapping[random.choice(self.level_types)].create_level()
-
             if not level.play(self.hero, self.level_number):
                 print("Game over!")
                 break

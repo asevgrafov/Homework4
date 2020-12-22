@@ -1,5 +1,5 @@
-
-def get_int_input(values):
+def get_int_input(values: list) -> int:
+    """Проверка введенного значения с клавиатуры"""
     while True:
         try:
             value = int(input())

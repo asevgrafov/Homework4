@@ -8,14 +8,19 @@ from Character import *
 class Level(ABC):
 
     @abstractmethod
-    def play(self, hero, n) -> bool:
+    def play(self, hero: Character, n: int) -> bool:
+        """
+        Происходит проигрывание конкретного уровня
+        """
         pass
 
 
 class AppleLevel(Level):
-    """Класс уровня на котором герой съедает яблоко"""
+    """
+    Класс уровня на котором герой съедает яблоко
+    """
 
-    def play(self, hero, n) -> bool:
+    def play(self, hero: Character, n: int) -> bool:
         apple = Apple()
         apple.heal = random.randrange(3, 10)
         if hero.current_health + apple.heal > hero.max_health:
@@ -27,12 +32,14 @@ class AppleLevel(Level):
 
 
 class PickUpLevel(Level):
-    """Класс уровня на котором герой может поднять предмет"""
+    """
+    Класс уровня на котором герой может поднять предмет
+    """
     equipment_types = ["Sword", "Bow", "Arrows", "Magic_book"]
 
-    def play(self, hero, n) -> bool:
+    def play(self, hero: Character, n: int) -> bool:
         equipment_type = random.choice(self.equipment_types)
-        equipment = None
+        equipment: Equipment = None
         if equipment_type == "Sword":
             equipment = Sword(random.randrange(3, 20))
         if equipment_type == "Bow":
@@ -52,15 +59,19 @@ class PickUpLevel(Level):
 
 
 class EnemyLevel(Level):
+    """
+    Класс уровня на котором герой встречается с врагом
+    """
     spawner_to_factory_mapping = {"Warrior": WarriorFactory(), "Archer": ArcherFactory(), "Wizard": WizardFactory()}
     enemy_types = ["Warrior", "Archer", "Wizard"]
 
-    def play(self, hero, n) -> bool:
+    def play(self, hero: Character, n: int) -> bool:
         enemy_type = random.choice(self.enemy_types)
         enemy = self.spawner_to_factory_mapping[enemy_type].create_character()
         print("Вы встретили врага: \n" + str(enemy))
-        if not self.hero_choise():
+        if not self.is_fighting():
             return True
+        # Текущий ход героя
         hero_step = True
         while hero.current_health > 0 and enemy.current_health > 0:
             self.step(hero, enemy, hero_step)
@@ -68,23 +79,28 @@ class EnemyLevel(Level):
         if hero.current_health > 0:
             hero.enemy_win_count += 1
             return True
+        elif hero.totem is not None:
+            hero.restore_from_totem()
+            print("\nПоказатели героя были восстановлены\n")
+            return True
         else:
-            if hero.totem is not None:
-                hero.restore_from_totem()
-                print("\nПоказатели героя были восстановлены\n")
-                return True
-            else:
-                return False
+            return False
 
-    def step(self, hero, enemy, hero_step):
+    def step(self, hero: Character, enemy: Character, hero_step: int) -> None:
+        """
+        Шаг боя
+        """
         if hero_step:
-            enemy.current_health -= hero.attack(self.pick_available_weapon(hero))
+            enemy.current_health -= int(hero.attack(self.pick_available_weapon(hero)))
             print("Здоровье врага после удара героя " + str(enemy.current_health))
         else:
-            hero.current_health -= enemy.attack() * self.get_defence(hero, enemy)
+            hero.current_health -= int(enemy.attack() * self.get_defence(hero, enemy))
             print("Здоровье героя после удара врага " + str(hero.current_health))
 
-    def pick_available_weapon(self, hero):
+    def pick_available_weapon(self, hero: Character) -> str:
+        """
+        Выбор доступного оружия для атаки
+        """
         print("Каким оружием вы хотите атаковать врага?")
         weapons = hero.get_available_weapons()
         menu_items = []
@@ -99,14 +115,22 @@ class EnemyLevel(Level):
             return "Bow"
         if isinstance(select_weapon, MagicBook):
             return "Magic_book"
+        else:
+            return ""
 
-    def get_defence(self, hero, enemy):
+    def get_defence(self, hero: Character, enemy: Character) -> float:
+        """
+        Порезка урона, если класс героя совпадает с классом врага
+        """
         if type(hero) == type(enemy):
             return 0.5
         else:
             return 1
 
-    def hero_choise(self):
+    def is_fighting(self) -> bool:
+        """
+        Выбор героя: сразиться или убежать
+        """
         print("1 - Сразиться, 2 - Убежать")
         a = get_int_input([1, 2])
         if a == 1:
@@ -114,8 +138,12 @@ class EnemyLevel(Level):
         else:
             return False
 
+
 class TotemLevel(Level):
-    def play(self, hero, n) -> bool:
+    """
+    Класс уровня на котором герой может поднять тотем
+    """
+    def play(self, hero: Character, n: int) -> bool:
         print("Вы нашли тотем: ")
         print("1 - Подобрать, 2 - Пройти мимо")
         a = get_int_input([1, 2])
@@ -127,24 +155,40 @@ class TotemLevel(Level):
 class LevelFactory(ABC):
 
     @abstractmethod
-    def create_level(self):
+    def create_level(self) -> Level:
+        """
+        Создание уровня
+        """
         pass
 
 
 class AppleLevelFactory(LevelFactory):
-    def create_level(self):
+    """
+    Класс создания уровня "яблоко"
+    """
+    def create_level(self) -> AppleLevel:
         return AppleLevel()
 
 
 class PickUpLevelFactory(LevelFactory):
-    def create_level(self):
+    """
+    Класс создания уровня "поднятие предмета"
+    """
+    def create_level(self) -> PickUpLevel:
         return PickUpLevel()
 
 
 class EnemyLevelFactory(LevelFactory):
-    def create_level(self):
+    """
+    Класс создания уровня "встреча с врагом"
+    """
+    def create_level(self) -> EnemyLevel:
         return EnemyLevel()
 
+
 class TotemLevelFactory(LevelFactory):
-    def create_level(self):
+    """
+    Класс создания уровня "тотем"
+    """
+    def create_level(self) -> TotemLevel:
         return TotemLevel()
