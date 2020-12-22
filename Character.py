@@ -4,7 +4,9 @@ from typing import Dict
 
 
 class Character(ABC):
-
+    """
+    Класс персонажа
+    """
     def __init__(self) -> None:
         self.current_health = 80
         self.max_health = 100
@@ -13,12 +15,18 @@ class Character(ABC):
         self.enemy_win_count = 0
 
     def attack(self, type_weapon: str = None) -> float:
+        """
+        Вычисление количества нанесенного урона
+        """
         arrow_damage = 0
         if type_weapon == "Bow":
             arrow_damage = self.items['Arrows'].get_damage()
         return self.items[type_weapon].get_damage() + arrow_damage
 
     def take_weapon(self, weapon: Equipment) -> None:
+        """
+        Добавления оружия в инвентарь
+        """
         if isinstance(weapon, Sword):
             self.items['Sword'] = weapon
         if isinstance(weapon, Bow):
@@ -29,6 +37,9 @@ class Character(ABC):
             self.items['Magic_book'] = weapon
 
     def get_inventory_string(self) -> str:
+        """
+        Отображение содержимого инвенторя
+        """
         stroka = "В инвентаре есть:\n"
         for k, item in self.items.items():
             if item is not None:
@@ -43,6 +54,9 @@ class Character(ABC):
                + str(self.enemy_win_count) + "\n" + self.get_inventory_string()
 
     def get_available_weapons(self) -> list:
+        """
+        Выбор доступного оружия
+        """
         weapons = [] # type: list
         if self.items["Sword"] is not None:
             weapons.append(self.items["Sword"])
@@ -53,6 +67,9 @@ class Character(ABC):
         return weapons
 
     def save_to_totem(self) -> None:
+        """
+        Сохранение параметров героя при поднятии тотема
+        """
         totem = Totem()
         totem.current_health = self.current_health
         totem.items = self.items.copy()
@@ -60,6 +77,9 @@ class Character(ABC):
         self.totem = totem
 
     def restore_from_totem(self) -> None:
+        """
+        Восстановление параметров героя из тотема
+        """
         self.current_health = self.totem.current_health
         self.items = self.totem.items
         self.enemy_win_count = self.totem.enemy_win_count
@@ -67,6 +87,9 @@ class Character(ABC):
 
 
 class Wizard(Character):
+    """
+    Персонаж класса маг
+    """
     def attack(self, type_weapon: str = "Magic_book") -> float:
         attack_k: float = 1
         if type_weapon == "Magic_book":
@@ -78,6 +101,9 @@ class Wizard(Character):
 
 
 class Archer(Character):
+    """
+    Персонаж класса лучник
+    """
     def attack(self, type_weapon: str = "Bow") -> float:
         attack_k: float = 1
         if type_weapon == "Bow":
@@ -89,6 +115,9 @@ class Archer(Character):
 
 
 class Warrior(Character):
+    """
+    Персонаж класса воин
+    """
     def attack(self, type_weapon: str = "Sword") -> float:
         attack_k: float = 1
         if type_weapon == "Sword":
@@ -109,6 +138,9 @@ class CharacterFactory(ABC):
 class WizardFactory(CharacterFactory):
 
     def create_character(self, weapon: Equipment = None) -> Wizard:
+        """
+        Класс создания персонажа маг
+        """
         wizard = Wizard()
         if weapon is None:
             wizard.take_weapon(MagicBook(10))
@@ -118,6 +150,9 @@ class WizardFactory(CharacterFactory):
 
 
 class ArcherFactory(CharacterFactory):
+    """
+    Класс создания персонажа лучник
+    """
     def create_character(self, weapon: Equipment = None) -> Archer:
         archer = Archer()
         if weapon is None:
@@ -129,6 +164,9 @@ class ArcherFactory(CharacterFactory):
 
 
 class WarriorFactory(CharacterFactory):
+    """
+    Класс создания персонажа воин
+    """
     def create_character(self, weapon: Equipment = None) -> Warrior:
         warrior = Warrior()
         if weapon is None:

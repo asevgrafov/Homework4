@@ -26,7 +26,6 @@ class Equipment(Items):
 
 
 class Sword(Equipment):
-
     def __init__(self, d: int) -> None:
         super(Sword, self).__init__()
         self.damage = d
