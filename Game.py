@@ -4,7 +4,7 @@ from Level import *
 import random
 
 
-class Game():
+class Game:
     spawner_to_factory_mapping = {"Warrior": WarriorFactory(),
                                   "Archer": ArcherFactory(),
                                   "Wizard": WizardFactory()}

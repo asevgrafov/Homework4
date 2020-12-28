@@ -1,8 +1,7 @@
-from abc import ABC, abstractmethod
 from typing import Dict
 
 
-class Items(ABC):
+class Items:
     def __init__(self) -> None:
         self.name = ""
 
